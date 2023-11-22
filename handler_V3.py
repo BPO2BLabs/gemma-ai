@@ -399,8 +399,9 @@ def send_json_to_backend(transcript, token, file):
         ]
     }
     headers = {
-        "Authorization": f"Bearer {token[2:-2]}"}
+        "Authorization": f"Bearer {token}"}
     response = requests.post(f"{url_backend}/Transcript/SaveBulkTranscripts", json=data, headers=headers)
+    print(headers)
     print("backend status response: ",response.status_code)
 
 
