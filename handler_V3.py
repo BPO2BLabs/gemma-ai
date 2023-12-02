@@ -673,6 +673,12 @@ def handler(event):
 
     subprocess.run(['aws', 's3', 'sync', '.', 's3://gemma-middle-storage/testOutput/','--exclude', '*', '--include', '*.txt',
                     '--include', '*.json', '--include', '*.srt'], check=True)
+    
+    for audio_file in audio_files:
+        # Delete the file after processing
+        audio_path = os.path.basename(audio_file)
+        os.remove(audio_path)
+        print(f"Deleted {audio_path}")
 
     return "Done"
 
