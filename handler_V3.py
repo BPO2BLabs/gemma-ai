@@ -287,7 +287,7 @@ def get_sentences_speaker_mapping(word_speaker_mapping, spk_ts):
             }
         else:
             snt["end_time"] = e
-        snt["text"] += wrd + " "
+        snt["text"] += wrd + ""
         prev_spk = spk
 
     snts.append(snt)
