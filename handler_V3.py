@@ -378,7 +378,7 @@ url_backend = "https://back.connectup.cloud"
 def send_json_to_backend(transcript, token, file):
     list_of_file = file.split("/")
     fileNameJSON = list_of_file[len(list_of_file)-1]
-    fileNameMP3 = fileNameJSON[:-5] + ".mp3"
+    fileNameMP3 = fileNameJSON[:-4] + ".mp3"
     transcription = []
     for i, segment in enumerate(transcript, start=1):
         transcription.append(
