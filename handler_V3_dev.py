@@ -374,7 +374,7 @@ def write_json(transcript, file):
     )
 
 
-URL_BACKEND = os.environ["URL_BACKEND"]
+URL_BACKEND = os.getenv("URL_BACKEND")
 def send_json_to_backend(transcript, token, file):
     list_of_file = file.split("/")
     fileNameJSON = list_of_file[len(list_of_file)-1]
