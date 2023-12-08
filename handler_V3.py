@@ -373,8 +373,8 @@ def write_json(transcript, file):
             flush=True,
     )
 
-url_backend = "https://back.connectup.cloud"
-#url_backend = "https://stage-test.connectup.cloud"
+URL_BACKEND = os.environ["URL_BACKEND"]
+
 def send_json_to_backend(transcript, token, file):
     list_of_file = file.split("/")
     fileNameJSON = list_of_file[len(list_of_file)-1]
@@ -400,7 +400,7 @@ def send_json_to_backend(transcript, token, file):
     }
     headers = {
         "Authorization": f"Bearer {token}"}
-    response = requests.post(f"{url_backend}/Transcript/SaveBulkTranscripts", json=data, headers=headers)
+    response = requests.post(f"{URL_BACKEND}/Transcript/SaveBulkTranscripts", json=data, headers=headers)
     print(headers)
     print("backend status response: ",response.status_code)
 
