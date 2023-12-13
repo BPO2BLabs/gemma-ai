@@ -373,8 +373,8 @@ def write_json(transcript, file):
             flush=True,
     )
 
-URL_BACKEND = os.environ["URL_BACKEND"]
 
+URL_BACKEND = os.getenv("URL_BACKEND")
 def send_json_to_backend(transcript, token, file):
     list_of_file = file.split("/")
     fileNameJSON = list_of_file[len(list_of_file)-1]
@@ -461,7 +461,7 @@ def handler(event):
     # audio_path = sys.argv[1]
     # token_user = sys.argv[2]
 
-    s3_path = f"s3://gemma-middle-storage/{folder_name}"
+    s3_path = f"s3://gemma-middle-storage-dev/{folder_name}"
 
     subprocess.run(['aws', 's3', 'sync', s3_path, '.'], check=True)
 
@@ -671,7 +671,7 @@ def handler(event):
 
     list_all_files(temp_path)
 
-    subprocess.run(['aws', 's3', 'sync', '.', 's3://gemma-middle-storage/testOutput/','--exclude', '*', '--include', '*.txt',
+    subprocess.run(['aws', 's3', 'sync', '.', 's3://gemma-middle-storage-dev/testOutput/','--exclude', '*', '--include', '*.txt',
                     '--include', '*.json', '--include', '*.srt'], check=True)
     
     for audio_file in audio_files:
