@@ -392,7 +392,10 @@ def send_json_to_backend(transcript, company_id, file):
             })
     
     
-    res_middle = requests.post(f"{URL_MIDDLE}/login/toorchestrator", json={"secret_password": MIDDLE_PASS})
+    headers_middle = {
+        "Content-Type": "application/json"
+    }
+    res_middle = requests.post(f"{URL_MIDDLE}/login/toorchestrator", json={"secret_password": MIDDLE_PASS}, headers=headers_middle)
     print("middle status response: ",res_middle.status_code)
     if res_middle.status_code != 200:
         print("Error in middle")
