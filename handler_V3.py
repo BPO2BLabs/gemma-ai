@@ -375,10 +375,11 @@ def write_json(transcript, file):
 
 
 URL_BACKEND = os.getenv("URL_BACKEND")
-def send_json_to_backend(transcript, token, file):
+URL_MIDDLE = os.getenv("URL_MIDDLE")
+MIDDLE_PASS = os.getenv("MIDDLE_PASS")
+def send_json_to_backend(transcript, company_id, file):
     list_of_file = file.split("/")
-    fileNameJSON = list_of_file[len(list_of_file)-1]
-    fileNameMP3 = fileNameJSON[:-4] + ".mp3"
+    fileNameMP3= list_of_file[len(list_of_file)-1]
     transcription = []
     for i, segment in enumerate(transcript, start=1):
         transcription.append(
@@ -389,7 +390,20 @@ def send_json_to_backend(transcript, token, file):
             "speaker": segment['speaker'],
             "text": segment['text'].strip().replace('-->', '->')
             })
+    
+    
+    res_middle = requests.post(f"{URL_MIDDLE}/login/toorchestrator", json={"secret_password": MIDDLE_PASS})
+    print("middle status response: ",res_middle.status_code)
+    if res_middle.status_code != 200:
+        print("Error in middle")
+        return
+    token_middle = res_middle.json()["accessToken"]
+    headers = {
+        "Authorization": f"Bearer {token_middle}",
+        "Content-Type": "application/json"
+    }
     data = {
+        "CompanyId": company_id,
         "Transcripts" : [
             {
                 "OriginalTranscriptSegments": transcription,
@@ -398,10 +412,8 @@ def send_json_to_backend(transcript, token, file):
             }
         ]
     }
-    headers = {
-        "Authorization": f"Bearer {token}"}
+    
     response = requests.post(f"{URL_BACKEND}/Transcript/SaveBulkTranscripts", json=data, headers=headers)
-    print(headers)
     print("backend status response: ",response.status_code)
 
 
@@ -439,13 +451,12 @@ def handler(event):
 
     # Extract folder_name from the event dictionary
     folder_name = event.get('input', {}).get('folder')
-    token_user = event.get('input', {}).get('token_user')
-    print("token_user:", token_user)
+    companyId = event.get('input', {}).get('companyId')
     if not folder_name:
         print("Folder name not provided in event.")
         return "Error"
-    if not token_user:
-        print("Token user not provided in event.")
+    if not companyId:
+        print("Company ID not provided in event.")
         return "Error"
 
     print("IN PROGRESS:")
@@ -590,7 +601,7 @@ def handler(event):
 
     ### AUX OUTPUT FUNC########
 
-    send_json_to_backend(ssm, token_user, audio_path)
+    send_json_to_backend(ssm, companyId, audio_path)
 
     with open(f"{audio_path[:-4]}.txt", "w", encoding="utf-8-sig") as f:
         get_speaker_aware_transcript(ssm, f)
