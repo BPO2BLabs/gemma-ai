@@ -481,7 +481,7 @@ def handler(event):
     # audio_path = sys.argv[1]
     # token_user = sys.argv[2]
 
-    s3_path = f"s3://gemma-middle-storage-dev/{folder_name}"
+    s3_path = f"s3://gemma-middle-storage/{folder_name}"
 
     subprocess.run(['aws', 's3', 'sync', s3_path, '.'], check=True)
 
@@ -691,7 +691,7 @@ def handler(event):
 
     list_all_files(temp_path)
 
-    subprocess.run(['aws', 's3', 'sync', '.', 's3://gemma-middle-storage-dev/testOutput/','--exclude', '*', '--include', '*.txt',
+    subprocess.run(['aws', 's3', 'sync', '.', 's3://gemma-middle-storage/testOutput/','--exclude', '*', '--include', '*.txt',
                     '--include', '*.json', '--include', '*.srt'], check=True)
     
     for audio_file in audio_files:
