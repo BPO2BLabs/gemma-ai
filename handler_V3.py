@@ -377,7 +377,7 @@ def write_json(transcript, file):
 URL_BACKEND = os.getenv("URL_BACKEND")
 URL_MIDDLE = os.getenv("URL_MIDDLE")
 MIDDLE_PASS = os.getenv("MIDDLE_PASS")
-def send_json_to_backend(transcript, company_id, file):
+def send_json_to_backend(transcript, company_id, createdBy, file):
     list_of_file = file.split("/")
     fileNameMP3= list_of_file[len(list_of_file)-1]
     transcription = []
@@ -408,6 +408,7 @@ def send_json_to_backend(transcript, company_id, file):
     }
     data = {
         "CompanyId": company_id,
+        "CreatedBy": createdBy,
         "Transcripts" : [
             {
                 "OriginalTranscriptSegments": transcription,
@@ -456,11 +457,15 @@ def handler(event):
     # Extract folder_name from the event dictionary
     folder_name = event.get('input', {}).get('folder')
     companyId = event.get('input', {}).get('companyId')
+    createdBy = event.get('input', {}).get('createdBy')
     if not folder_name:
         print("Folder name not provided in event.")
         return "Error"
     if not companyId:
         print("Company ID not provided in event.")
+        return "Error"
+    if not createdBy:
+        print("createdBy not provided in event.")
         return "Error"
 
     print("IN PROGRESS:")
@@ -605,7 +610,7 @@ def handler(event):
 
     ### AUX OUTPUT FUNC########
 
-    send_json_to_backend(ssm, companyId, audio_path)
+    send_json_to_backend(ssm, companyId, createdBy, audio_path)
 
     with open(f"{audio_path[:-4]}.txt", "w", encoding="utf-8-sig") as f:
         get_speaker_aware_transcript(ssm, f)
